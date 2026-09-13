@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vérifier un passeport financier — SmartBudget Africa</title>
+<meta name="description" content="Vérifiez qu'un passeport financier SmartBudget est authentique. Saisissez le numéro imprimé sur le document." />
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<!--
+  ═══════════════════════════════════════════════════════════════════════════
+  LA PAGE DE VÉRIFICATION
+  ═══════════════════════════════════════════════════════════════════════════
+
+  C'est l'adresse imprimée sur CHAQUE passeport financier. Elle est consultée
+  par des gens qui n'ont pas de compte SmartBudget et n'en auront jamais :
+  agents de microfinance, bailleurs, employeurs.
+
+  ⚠️ CE QU'ELLE RÉPOND, ET RIEN D'AUTRE
+     « Ce numéro correspond-il à un document que nous avons émis, est-il encore
+     valide, et voici son empreinte à comparer avec votre papier. »
+
+     Elle n'affiche AUCUNE donnée personnelle. Ni nom, ni montant, ni taux, ni
+     nombre de tontines. Quelqu'un qui tient le papier a déjà tout cela sous les
+     yeux ; quelqu'un qui ne l'a pas n'a aucune raison de l'obtenir en tapant
+     huit caractères.
+
+  ⚠️ POURQUOI L'EMPREINTE EST INDISPENSABLE
+     Un numéro valide prouve qu'un document A ÉTÉ ÉMIS. Il ne prouve pas que CE
+     papier-ci est celui-là. Sans empreinte, il suffirait d'ouvrir un vrai
+     passeport dans un éditeur PDF, de remplacer « 62 % » par « 100 % », et de
+     le présenter avec un numéro parfaitement authentique.
+  ═══════════════════════════════════════════════════════════════════════════
+-->
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 120 120" width="34" height="34" aria-hidden="true">
+        <path d="M88 32 C62 26 34 34 34 52 C34 66 54 70 62 73" stroke="#2FD37F" stroke-width="17" fill="none" stroke-linecap="round"/>
+        <path d="M62 73 C72 77 86 80 86 92 C86 106 60 110 36 100" stroke="#FFC93C" stroke-width="17" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">Smart<span>Budget</span></span>
+    </a>
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="verifier.html" aria-current="page">Vérifier</a>
+      <a href="institutions.html">Institutions</a>
+      <a href="telecharger.html">Télécharger</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <h1>Vérifier un passeport financier</h1>
+    <p class="lead">
+      Saisissez le numéro imprimé en haut du document. La réponse est immédiate
+      et ne révèle aucune information personnelle sur son titulaire.
+    </p>
+  </div>
+
+  <div class="verify-box">
+    <form id="form" novalidate>
+      <label for="num">Numéro du document</label>
+      <input id="num" type="text" inputmode="latin" autocomplete="off"
+             placeholder="SB-2609-K7M2Q9XF" maxlength="20"
+             aria-describedby="hint" />
+      <p class="field-hint" id="hint">
+        Les tirets, les espaces et les minuscules sont acceptés — recopiez comme
+        vous le lisez.
+      </p>
+      <button class="btn" type="submit" id="go">Vérifier</button>
+    </form>
+
+    <div id="out" role="status" aria-live="polite"></div>
+  </div>
+
+  <div class="note">
+    <strong>Un document authentique ne garantit pas un bon dossier.</strong>
+    Cette page confirme seulement que le document a bien été émis par
+    SmartBudget et qu'il n'a pas été modifié. Le contenu — cotisations,
+    ponctualité, revenus — reste à apprécier par vous.
+  </div>
+
+  <h2>Comment lire le résultat</h2>
+  <table>
+    <tr>
+      <th>Authentique</th>
+      <td>Le document existe, il est valide, et son empreinte est affichée.
+          <strong>Comparez-la avec celle imprimée sur le papier.</strong></td>
+    </tr>
+    <tr>
+      <th>Remplacé ou retiré</th>
+      <td>Le titulaire a émis un document plus récent, ou a retiré celui-ci.
+          Demandez-lui la version à jour.</td>
+    </tr>
+    <tr>
+      <th>Expiré</th>
+      <td>Un passeport est valable 90 jours. Au-delà, les chiffres qu'il porte
+          ne décrivent plus la situation actuelle.</td>
+    </tr>
+    <tr>
+      <th>Inconnu</th>
+      <td>Aucun document ne porte ce numéro. Vérifiez votre saisie — puis, si le
+          numéro est bien recopié, considérez le document comme non valable.</td>
+    </tr>
+  </table>
+
+  <h2>Et l'empreinte, à quoi sert-elle ?</h2>
+  <p>
+    Un numéro valide prouve qu'un document a été émis. Il ne prouve pas que
+    <em>celui que vous tenez</em> est bien celui-là — on peut modifier un PDF et
+    conserver un vrai numéro.
+  </p>
+  <p>
+    L'empreinte est calculée à partir du contenu du document au moment de son
+    émission. Si un seul chiffre a été retouché, elle ne correspond plus.
+    <strong>Comparez les deux suites de caractères à l'œil : c'est le seul geste
+    qui détecte une falsification.</strong>
+  </p>
+</main>
+
+<footer class="wrap">
+  <p>
+    SmartBudget Africa ne détient aucun fonds. Elle tient le registre des
+    opérations enregistrées par ses utilisateurs et des cotisations constatées
+    par les membres de leurs tontines.
+  </p>
+  <nav>
+    <a href="conditions.html">Conditions d'utilisation</a>
+    <a href="confidentialite.html">Confidentialité</a>
+    <a href="suppression-compte.html">Supprimer mon compte</a>
+  </nav>
+</footer>
+
+<script>
+// ⚠️ L'ADRESSE DE L'API, EN UN SEUL ENDROIT.
+//    Si elle change, elle change ici — pas dans trois fichiers.
+const API = 'https://smartbudget-api-kbh8.onrender.com';
+
+const form = document.getElementById('form');
+const input = document.getElementById('num');
+const out = document.getElementById('out');
+const go = document.getElementById('go');
+
+function show(cls, title, body) {
+  // textContent et non innerHTML : le numéro saisi vient de l'utilisateur et
+  // ne doit jamais être interprété comme du HTML.
+  out.innerHTML = '';
+  const box = document.createElement('div');
+  box.className = 'result ' + cls;
+  const h = document.createElement('h3');
+  h.textContent = title;
+  box.appendChild(h);
+  if (body) { const p = document.createElement('p'); p.textContent = body; box.appendChild(p); }
+  out.appendChild(box);
+  return box;
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const raw = input.value.trim();
+
+  if (!raw) {
+    show('warn', 'Saisissez un numéro', 'Le numéro se trouve en haut du document, sous le bandeau vert.');
+    return;
+  }
+
+  go.disabled = true;
+  go.textContent = 'Vérification…';
+  out.innerHTML = '';
+
+  try {
+    // Le serveur normalise lui-même la saisie : tirets, espaces, minuscules.
+    // On lui envoie ce que la personne a tapé, sans la corriger ici — deux
+    // normalisations qui divergent, c'est un bug qui n'arrive qu'en production.
+    const res = await fetch(API + '/api/public/passport/' + encodeURIComponent(raw));
+    const body = await res.json();
+    const d = body.data || {};
+
+    if (d.status === 'VALID') {
+      const box = show('valid', 'Document authentique',
+        'Ce numéro correspond à un passeport émis par SmartBudget Africa, actuellement valide.');
+
+      const lbl = document.createElement('p');
+      lbl.style.marginTop = '12px';
+      lbl.innerHTML = '<strong>Empreinte enregistrée — comparez-la avec celle imprimée :</strong>';
+      box.appendChild(lbl);
+
+      const fp = document.createElement('div');
+      fp.className = 'fingerprint';
+      fp.textContent = d.shortFingerprint || '—';
+      box.appendChild(fp);
+
+      const dates = document.createElement('p');
+      dates.textContent = 'Émis le ' + (d.issuedAt || '—') + ' · valable jusqu’au ' + (d.expiresAt || '—');
+      box.appendChild(dates);
+
+      // ⚠️ Dire si les montants ont été inclus évite un contresens coûteux :
+      //    un agent voyant un document sans chiffres pourrait conclure à un
+      //    revenu nul, alors que le titulaire a simplement choisi de ne pas
+      //    les publier. La nuance change une décision de crédit.
+      const amounts = document.createElement('p');
+      amounts.style.marginTop = '8px';
+      amounts.textContent = d.amountsIncluded
+        ? 'Ce document inclut les montants déclarés par son titulaire.'
+        : 'Le titulaire a choisi de ne pas publier ses montants. Cela ne signifie pas qu’ils sont nuls.';
+      box.appendChild(amounts);
+
+    } else if (d.status === 'REVOKED') {
+      show('invalid', 'Document retiré',
+        'Ce document a été remplacé par un plus récent, ou retiré par son titulaire. Demandez-lui la version à jour.');
+
+    } else if (d.status === 'EXPIRED') {
+      show('warn', 'Document expiré',
+        'Ce document a bien été émis par SmartBudget, mais sa période de validité de 90 jours est passée. Les chiffres qu’il porte ne décrivent plus la situation actuelle.');
+
+    } else {
+      show('invalid', 'Numéro inconnu',
+        'Aucun document ne porte ce numéro. Vérifiez votre saisie — attention aux confusions entre O et 0, ou entre I et 1. Si le numéro est bien recopié, ce document n’a pas été émis par SmartBudget.');
+    }
+  } catch (err) {
+    // ⚠️ On ne dit JAMAIS que le document est faux quand c'est le réseau qui a
+    //    échoué. Accuser un document authentique à cause d'une coupure serait
+    //    la pire erreur que cette page puisse commettre.
+    show('warn', 'Vérification impossible',
+      'Le serveur n’a pas répondu. Cela ne dit rien sur le document — réessayez dans un instant.');
+  } finally {
+    go.disabled = false;
+    go.textContent = 'Vérifier';
+  }
+});
+
+// Pré-remplissage depuis l'adresse : /verifier.html?n=SB-2609-K7M2Q9XF
+// Permet de faire un QR code qui ouvre la page déjà remplie.
+const preset = new URLSearchParams(location.search).get('n');
+if (preset) { input.value = preset; form.requestSubmit(); }
+</script>
+
+</body>
+</html>

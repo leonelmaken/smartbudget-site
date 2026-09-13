@@ -1,0 +1,139 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SmartBudget Africa — site public
+   ═══════════════════════════════════════════════════════════════════════════
+
+   ⚠️ AUCUNE DÉPENDANCE EXTERNE. Pas de police Google, pas de framework, pas de
+      CDN. Trois raisons :
+
+      1. Ce site sera consulté depuis un téléphone d'agent d'EMF, sur un réseau
+         camerounais, parfois en 2G. Chaque requête vers un domaine tiers est
+         une seconde d'attente et un risque d'échec.
+      2. Une page de vérification qui met dix secondes à s'afficher ne sera pas
+         utilisée. On vérifie un document en trente secondes ou on ne le
+         vérifie pas.
+      3. Aucun traceur tiers : ce site reçoit des numéros de documents, il n'a
+         pas à les partager avec qui que ce soit.
+
+   ⚠️ PAS DE MODE SOMBRE. Ce site sert à lire un papier posé à côté de l'écran,
+      souvent en plein jour. Le fond clair est le bon choix ici, contrairement
+      à l'application.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --green:      #0E9E4F;
+  --green-deep: #053B29;
+  --gold:       #FBC02D;
+  --ink:        #0B1220;
+  --muted:      #475569;
+  --line:       #E2E8F0;
+  --bg:         #FFFFFF;
+  --bg-soft:    #F8FAFC;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+
+/* ── En-tête ─────────────────────────────────────────────────────────────── */
+header {
+  background: var(--green-deep);
+  color: #fff;
+  padding: 14px 0;
+}
+header .wrap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; }
+.brand-name { font-size: 19px; font-weight: 800; letter-spacing: -0.3px; }
+.brand-name span { color: #2FD37F; }
+nav { margin-left: auto; display: flex; gap: 18px; flex-wrap: wrap; }
+nav a { color: #CBD5E1; text-decoration: none; font-size: 14px; }
+nav a:hover, nav a[aria-current="page"] { color: #fff; text-decoration: underline; }
+
+/* ── Bandeau d'accueil ───────────────────────────────────────────────────── */
+.hero { padding: 56px 0 40px; }
+h1 { font-size: 34px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
+.lead { font-size: 18px; color: var(--muted); margin: 0 0 24px; }
+
+h2 { font-size: 22px; margin: 40px 0 12px; letter-spacing: -0.3px; }
+h3 { font-size: 17px; margin: 24px 0 8px; }
+p  { margin: 0 0 14px; }
+
+.btn {
+  display: inline-block; padding: 13px 22px; border-radius: 8px;
+  background: var(--green); color: #fff; text-decoration: none;
+  font-weight: 700; font-size: 15px; border: none; cursor: pointer;
+}
+.btn:hover { background: #0B8642; }
+.btn-ghost { background: transparent; color: var(--green); border: 1.5px solid var(--green); }
+
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.card {
+  border: 1px solid var(--line); border-radius: 12px; padding: 20px;
+  background: var(--bg-soft);
+}
+.card h3 { margin-top: 0; }
+.card p  { margin-bottom: 0; color: var(--muted); font-size: 15px; }
+
+/* ── Vérification ────────────────────────────────────────────────────────── */
+.verify-box {
+  border: 2px solid var(--green-deep); border-radius: 12px;
+  padding: 24px; margin: 24px 0;
+}
+label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+input[type="text"] {
+  width: 100%; padding: 15px 16px; font-size: 20px;
+  font-family: "Courier New", monospace; letter-spacing: 2px; text-transform: uppercase;
+  border: 1.5px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink);
+}
+input[type="text"]:focus { outline: none; border-color: var(--green); }
+.field-hint { font-size: 13px; color: var(--muted); margin: 8px 0 16px; }
+
+/* Résultats — la couleur porte le sens, le texte aussi. Jamais la couleur
+   seule : un daltonien doit pouvoir lire le verdict. */
+.result { border-radius: 10px; padding: 18px 20px; margin-top: 20px; border-left: 5px solid; }
+.result h3 { margin: 0 0 6px; font-size: 19px; }
+.result p  { margin: 0; font-size: 15px; }
+.result.valid   { background: #F0FDF4; border-color: #047857; color: #04321F; }
+.result.invalid { background: #FEF2F2; border-color: #B91C1C; color: #450A0A; }
+.result.warn    { background: #FFFBEB; border-color: #B45309; color: #451A03; }
+
+.fingerprint {
+  font-family: "Courier New", monospace; font-size: 21px; font-weight: 700;
+  letter-spacing: 2px; margin: 10px 0 6px; word-break: break-all;
+}
+
+.note {
+  background: var(--bg-soft); border-left: 4px solid var(--gold);
+  padding: 14px 18px; margin: 20px 0; font-size: 15px;
+}
+
+table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); font-size: 15px; }
+th { font-weight: 700; }
+
+footer {
+  margin-top: 64px; padding: 28px 0; border-top: 1px solid var(--line);
+  font-size: 14px; color: var(--muted);
+}
+footer a { color: var(--muted); }
+footer nav { margin: 10px 0 0; gap: 16px; }
+footer nav a { color: var(--muted); font-size: 14px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  h1 { font-size: 27px; }
+  .hero { padding: 36px 0 28px; }
+  nav { gap: 12px; }
+}
