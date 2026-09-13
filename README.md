@@ -45,26 +45,65 @@ souvent en plein jour. Contrairement à l'application.
 
 ## Modifier l'adresse de l'API
 
-Une seule occurrence, en haut du `<script>` de `verifier.html` :
+Une seule occurrence, en haut de `assets/verifier.js` :
 
 ```js
 const API = 'https://smartbudget-api-kbh8.onrender.com';
 ```
 
-Après un changement de domaine, le backend doit autoriser la nouvelle origine :
-variable `CORS_ORIGINS` sur Render.
+Après tout changement d'origine — du site **ou** de l'API — le backend doit
+autoriser la nouvelle : variable `CORS_ORIGINS` sur Render. Sans cela le
+navigateur rejette l'appel avant même de lire la réponse, et la page reste
+bloquée sur « Vérification impossible ».
 
-## Publication
+## Pourquoi le JavaScript est dans un fichier séparé
 
-GitHub Pages, branche `main`, dossier racine.
+Pour permettre `script-src 'self'` dans la CSP. Un `<script>` inline oblige à
+autoriser `'unsafe-inline'`, ce qui désarme la protection principale contre
+l'injection. Sur une page dont le rôle est d'affirmer qu'un document est
+authentique, un script injecté pourrait afficher « Document authentique » sur
+n'importe quoi.
 
-```bash
-git add -A
-git commit -m "..."
-git push
+## Hébergement : Render Static Site
+
+Dashboard Render → **New > Static Site** → dépôt `smartbudget-site`.
+
+| Champ | Valeur |
+|---|---|
+| Branch | `main` |
+| Root Directory | *(vide)* |
+| Build Command | *(vide)* |
+| Publish Directory | `.` |
+
+Pas de build : ce sont des fichiers HTML servis tels quels. Ajouter la variable
+d'environnement `SKIP_INSTALL_DEPS=true` pour que Render n'essaie pas de
+détecter des dépendances inexistantes.
+
+### En-têtes de réponse (Settings → Headers)
+
+C'est la raison principale de préférer Render à GitHub Pages ici : Pages ne
+permet aucun en-tête personnalisé.
+
+Chemin `/*` :
+
+```
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Referrer-Policy: no-referrer
+Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://smartbudget-api-kbh8.onrender.com; img-src 'self' data:; base-uri 'none'; form-action 'none'
 ```
 
-Le déploiement prend environ une minute.
+`X-Frame-Options: DENY` n'est pas décoratif : sans lui, un site frauduleux peut
+afficher cette page de vérification dans un cadre invisible pour emprunter sa
+crédibilité. `Referrer-Policy: no-referrer` évite que le numéro de document,
+présent dans l'URL en cas de lecture d'un QR code, parte dans l'en-tête
+`Referer` vers un tiers.
+
+Le déploiement se déclenche à chaque `git push` sur `main` et prend environ une
+minute.
+
+`.nojekyll` ne sert qu'en repli sur GitHub Pages ; il est sans effet sur Render
+et ne coûte rien.
 
 ## Si le domaine change un jour
 
