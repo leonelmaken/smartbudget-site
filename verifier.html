@@ -177,9 +177,56 @@ form.addEventListener('submit', async (e) => {
     // Le serveur normalise lui-même la saisie : tirets, espaces, minuscules.
     // On lui envoie ce que la personne a tapé, sans la corriger ici — deux
     // normalisations qui divergent, c'est un bug qui n'arrive qu'en production.
-    const res = await fetch(API + '/api/public/passport/' + encodeURIComponent(raw));
+    const url = API + '/api/public/passport/' + encodeURIComponent(raw);
+
+    // ⚠️ RÉVEIL DU SERVEUR — ET POURQUOI LE RATTRAPAGE EST DANS UN try/catch.
+    //    L'hébergement gratuit met l'instance en veille après quelques minutes
+    //    d'inactivité. Cette page est consultée rarement : la veille est le cas
+    //    NORMAL, pas l'exception. Sans rattrapage, un agent d'EMF verrait
+    //    « Vérification impossible » à presque chaque usage et cesserait
+    //    d'utiliser l'outil.
+    //
+    //    Subtilité vérifiée en test : la réponse d'erreur de l'hébergeur ne porte
+    //    PAS les en-têtes CORS. Le navigateur rejette donc fetch() au lieu de
+    //    renvoyer une réponse 503 lisible — on ne peut pas tester res.status,
+    //    l'exception arrive avant. Le rattrapage doit donc attraper l'exception,
+    //    pas inspecter un code de statut.
+    const ATTEMPTS = 5, PAUSE = 8000;
+    let res = null, lastError = null;
+
+    for (let i = 0; i < ATTEMPTS; i++) {
+      if (i === 1) {
+        show('warn', 'Réveil du serveur…',
+          'Première vérification depuis un moment. Le serveur démarre — patientez une trentaine de secondes.');
+      }
+      try {
+        const r = await fetch(url);
+        if (r.status === 502 || r.status === 503) { lastError = new Error('http ' + r.status); }
+        else { res = r; break; }
+      } catch (e) { lastError = e; }
+      if (i < ATTEMPTS - 1) await new Promise(r => setTimeout(r, PAUSE));
+    }
+
+    out.innerHTML = '';
+    if (!res) throw lastError || new Error('injoignable');
+
+    // ⚠️ NE JAMAIS DÉDUIRE « NUMÉRO INCONNU » D'UNE RÉPONSE QUI N'EN EST PAS UNE.
+    //    Le serveur répond TOUJOURS 200 pour une vérification — un 404 serait un
+    //    oracle permettant de balayer l'espace des numéros. Donc tout code autre
+    //    que 200 signifie que le serveur est indisponible, mal déployé ou que
+    //    l'endpoint a changé : jamais que le document est faux.
+    //    Sans ce garde-fou, un backend non déployé renvoie un 404 JSON, `data`
+    //    est absent, et la page accuse de faux un document parfaitement valide.
+    if (!res.ok) throw new Error('http ' + res.status);
+
     const body = await res.json();
-    const d = body.data || {};
+    const d = (body && body.data) || {};
+
+    // Même logique : un corps qui ne porte pas un statut reconnu n'est pas une
+    // réponse de vérification. On ne l'interprète pas, on le signale.
+    if (['VALID', 'REVOKED', 'EXPIRED', 'UNKNOWN'].indexOf(d.status) === -1) {
+      throw new Error('payload inattendu');
+    }
 
     if (d.status === 'VALID') {
       const box = show('valid', 'Document authentique',
