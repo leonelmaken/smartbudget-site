@@ -1,0 +1,13 @@
+Polices embarquées — toutes redistribuables, servies depuis ce dépôt.
+
+schola-*.woff2
+  TeX Gyre Schola, d'après Century Schoolbook L (URW++).
+  GUST Font License (GFL), compatible LPPL 1.3c.
+  https://www.gust.org.pl/projects/e-foundry/licenses
+
+etroite-bold.woff2
+  Liberation Sans Narrow, Red Hat / Google.
+  SIL Open Font License 1.1.
+
+Sous-ensembles au jeu latin + français (pyftsubset), afin de tenir la page
+sous les 70 Ko de fontes sur un réseau 2G. Aucune requête vers un tiers.

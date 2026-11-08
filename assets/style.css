@@ -1,139 +1,603 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    SmartBudget Africa — site public
+   « Le registre opposable »
    ═══════════════════════════════════════════════════════════════════════════
 
-   ⚠️ AUCUNE DÉPENDANCE EXTERNE. Pas de police Google, pas de framework, pas de
-      CDN. Trois raisons :
+   ⚠️ AUCUNE REQUÊTE VERS UN TIERS. Pas de CDN, pas de framework, pas de
+      feuille de style de police hébergée. Les trois fontes sont servies
+      depuis ce dépôt, sous-ensemblées au français : 60 Ko au total.
 
-      1. Ce site sera consulté depuis un téléphone d'agent d'EMF, sur un réseau
-         camerounais, parfois en 2G. Chaque requête vers un domaine tiers est
-         une seconde d'attente et un risque d'échec.
-      2. Une page de vérification qui met dix secondes à s'afficher ne sera pas
-         utilisée. On vérifie un document en trente secondes ou on ne le
-         vérifie pas.
-      3. Aucun traceur tiers : ce site reçoit des numéros de documents, il n'a
-         pas à les partager avec qui que ce soit.
+      1. Ce site est consulté depuis un téléphone d'agent d'EMF, sur un réseau
+         camerounais, parfois en 2G. Chaque domaine tiers est une seconde
+         d'attente et un risque d'échec.
+      2. Une page de vérification qui met dix secondes à s'afficher ne sera
+         pas utilisée. On vérifie un document en trente secondes ou pas.
+      3. Aucun traceur : ce site reçoit des numéros de documents.
 
-   ⚠️ PAS DE MODE SOMBRE. Ce site sert à lire un papier posé à côté de l'écran,
-      souvent en plein jour. Le fond clair est le bon choix ici, contrairement
-      à l'application.
+   ⚠️ DEUX SURFACES, DEUX FONDS, ET C'EST LA LOGIQUE DE L'OBJET.
+      Un registre a une reliure et des pages. La couverture (vert profond)
+      porte l'accueil : on la regarde. Les pages (ivoire réglé) portent la
+      vérification et les textes : on les LIT, souvent avec un papier posé à
+      côté de l'écran, en plein jour. Ce n'est pas un mode sombre — c'est le
+      dessus et le dedans du même objet.
+
+   ⚠️ PAS DE CARTES. Les blocs sont des écritures du registre, séparées par
+      des filets. Une grille de cartes à ombre portée, c'est le gabarit que
+      cette refonte existe pour remplacer.
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── Fontes ──────────────────────────────────────────────────────────────── */
+/* Century Schoolbook : la voix du cahier réglé. Sturdy, grande hauteur d'x,
+   lisible sur un écran bon marché en plein soleil — l'inverse d'un serif
+   élégant qu'on choisirait pour « faire livre ». */
+@font-face {
+  font-family: "Schola";
+  src: url("polices/schola-regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Schola";
+  src: url("polices/schola-bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+/* Le grotesque étroit des en-têtes de colonnes d'un registre imprimé. */
+@font-face {
+  font-family: "Etroite";
+  src: url("polices/etroite-bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
 :root {
-  --green:      #0E9E4F;
-  --green-deep: #053B29;
-  --gold:       #FBC02D;
-  --ink:        #0B1220;
-  --muted:      #475569;
-  --line:       #E2E8F0;
-  --bg:         #FFFFFF;
-  --bg-soft:    #F8FAFC;
+  /* La reliure */
+  --reliure:      #0B3B2E;
+  --reliure-haut: #15543F;
+  --reliure-bas:  #072A20;
+  --dorure:       #C8942A;
+  --dorure-clair: #E8C675;
+
+  /* La page */
+  --page:      #F7F3E8;
+  --page-creux:#EFE9DA;
+  --encre:     #14130F;
+  --encre-pale:#5B5748;
+  --reglure:   #C6D4DF;
+  --filet:     #DCD4C2;
+
+  /* Le filet rouge de la colonne crédit — le seul accent */
+  --credit:    #A8211A;
+  --credit-vif:#C62B22;
+
+  /* Le bleu du tampon encreur */
+  --tampon:    #1F4FA8;
+
+  --mesure: 68ch;
 }
 
 * { box-sizing: border-box; }
 
+html { -webkit-text-size-adjust: 100%; }
+
 body {
   margin: 0;
-  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: var(--ink);
-  background: var(--bg);
-  line-height: 1.65;
-  font-size: 16px;
+  font-family: "Schola", "Century Schoolbook L", Georgia, serif;
+  font-size: 17px;
+  line-height: 1.62;
+  color: var(--encre);
+  background: var(--page);
+  /* La réglure du cahier, sous tout le document. Deux pixels de dégradé
+     répétés : zéro requête, zéro image. */
+  background-image: repeating-linear-gradient(
+    to bottom, transparent 0 31px, color-mix(in srgb, var(--reglure) 38%, transparent) 31px 32px
+  );
 }
 
-.wrap { max-width: 860px; margin: 0 auto; padding: 0 20px; }
-
-/* ── En-tête ─────────────────────────────────────────────────────────────── */
-header {
-  background: var(--green-deep);
-  color: #fff;
-  padding: 14px 0;
+/* ── Surfaces que le navigateur dessine et qu'on oublie toujours ─────────── */
+::selection { background: var(--dorure-clair); color: var(--encre); }
+:focus-visible {
+  outline: 2.5px solid var(--tampon);
+  outline-offset: 3px;
+  border-radius: 1px;
 }
-header .wrap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; }
-.brand-name { font-size: 19px; font-weight: 800; letter-spacing: -0.3px; }
-.brand-name span { color: #2FD37F; }
-nav { margin-left: auto; display: flex; gap: 18px; flex-wrap: wrap; }
-nav a { color: #CBD5E1; text-decoration: none; font-size: 14px; }
-nav a:hover, nav a[aria-current="page"] { color: #fff; text-decoration: underline; }
+html { scrollbar-color: var(--reliure) var(--page-creux); scrollbar-width: thin; }
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: var(--page-creux); }
+::-webkit-scrollbar-thumb { background: var(--reliure); border: 3px solid var(--page-creux); border-radius: 99px; }
+a { color: var(--credit); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
 
-/* ── Bandeau d'accueil ───────────────────────────────────────────────────── */
-.hero { padding: 56px 0 40px; }
-h1 { font-size: 34px; line-height: 1.25; margin: 0 0 12px; letter-spacing: -0.5px; }
-.lead { font-size: 18px; color: var(--muted); margin: 0 0 24px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+.lire { max-width: var(--mesure); }
 
-h2 { font-size: 22px; margin: 40px 0 12px; letter-spacing: -0.3px; }
-h3 { font-size: 17px; margin: 24px 0 8px; }
-p  { margin: 0 0 14px; }
-
-.btn {
-  display: inline-block; padding: 13px 22px; border-radius: 8px;
-  background: var(--green); color: #fff; text-decoration: none;
-  font-weight: 700; font-size: 15px; border: none; cursor: pointer;
+/* ═══ LA RELIURE ═════════════════════════════════════════════════════════ */
+/* L'en-tête n'est pas une barre posée sur la page : c'est le haut de la
+   couverture, et il porte la nervure de la reliure sur son flanc gauche. */
+.reliure {
+  background:
+    linear-gradient(180deg, var(--reliure-haut) 0%, var(--reliure) 55%, var(--reliure-bas) 100%);
+  color: var(--page);
+  position: relative;
 }
-.btn:hover { background: #0B8642; }
-.btn-ghost { background: transparent; color: var(--green); border: 1.5px solid var(--green); }
-
-.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-.card {
-  border: 1px solid var(--line); border-radius: 12px; padding: 20px;
-  background: var(--bg-soft);
+.reliure::after {
+  /* La tranche dorée du registre : un filet plein sur toute la largeur.
+     ⚠️ NE PAS y remettre un dégradé à segments : les arrêts en pourcentage
+        produisaient une encoche de trente pixels qui se lisait comme un
+        défaut d'affichage, pas comme une reliure. */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--dorure) 55%, transparent) 0%,
+    var(--dorure) 22%, var(--dorure) 78%,
+    color-mix(in srgb, var(--dorure) 55%, transparent) 100%);
 }
-.card h3 { margin-top: 0; }
-.card p  { margin-bottom: 0; color: var(--muted); font-size: 15px; }
+.reliure .wrap {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  padding-top: 18px; padding-bottom: 18px;
+}
 
-/* ── Vérification ────────────────────────────────────────────────────────── */
+.marque { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--page); }
+.marque svg { flex: none; }
+.marque-nom {
+  font-size: 21px; font-weight: 700; letter-spacing: -0.01em; line-height: 1;
+  color: var(--dorure-clair);
+}
+.marque-nom b { font-weight: 700; color: var(--page); }
+.marque-sous {
+  display: block; margin-top: 3px;
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--page) 62%, transparent);
+}
+
+.reliure nav { margin-left: auto; display: flex; gap: 4px; flex-wrap: wrap; }
+.reliure nav a {
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--page) 78%, transparent);
+  text-decoration: none; padding: 7px 12px; border-radius: 2px;
+  transition: color .18s cubic-bezier(.2,.7,.3,1), background-color .18s cubic-bezier(.2,.7,.3,1);
+}
+.reliure nav a:hover { color: var(--page); background: color-mix(in srgb, var(--page) 9%, transparent); }
+.reliure nav a[aria-current="page"] {
+  color: var(--reliure-bas); background: var(--dorure-clair);
+}
+
+/* ═══ LA COUVERTURE — premier écran de l'accueil ═════════════════════════ */
+.couverture {
+  background:
+    radial-gradient(120% 90% at 12% 0%, var(--reliure-haut) 0%, transparent 62%),
+    linear-gradient(180deg, var(--reliure) 0%, var(--reliure-bas) 100%);
+  color: var(--page);
+  padding: 72px 0 80px;
+}
+.couverture .wrap {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 64px; align-items: center;
+}
+.couverture h1 {
+  font-size: clamp(38px, 4.6vw, 60px); line-height: 1.07; margin: 0 0 22px;
+  letter-spacing: -0.022em; text-wrap: balance; color: var(--page);
+}
+.couverture h1 em {
+  font-style: normal; color: var(--dorure-clair);
+}
+.couverture .amorce {
+  font-size: 19px; line-height: 1.58; margin: 0 0 30px; max-width: 46ch;
+  color: color-mix(in srgb, var(--page) 84%, transparent);
+}
+
+/* La phrase réglementaire : filetée d'or, jamais encadrée. */
+.regle {
+  border-top: 1px solid color-mix(in srgb, var(--dorure) 46%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--dorure) 46%, transparent);
+  padding: 15px 0; margin: 0 0 30px; max-width: 46ch;
+  font-size: 15.5px; line-height: 1.55;
+  color: color-mix(in srgb, var(--page) 80%, transparent);
+}
+.regle strong { color: var(--dorure-clair); font-weight: 700; }
+
+.actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+/* ═══ LE TAMPON — l'action primaire ══════════════════════════════════════ */
+/* Un tampon encreur, pas un bouton arrondi : bord net, double filet, et il
+   s'enfonce quand on le presse. */
+.tampon {
+  display: inline-block; padding: 14px 26px;
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--page); background: var(--credit);
+  text-decoration: none; border: none; cursor: pointer; border-radius: 2px;
+  box-shadow: 0 2px 0 0 var(--credit),
+              0 3px 10px -2px rgba(0,0,0,.45),
+              inset 0 0 0 1px color-mix(in srgb, #fff 26%, transparent);
+  transition: transform .14s cubic-bezier(.2,.7,.3,1), box-shadow .14s cubic-bezier(.2,.7,.3,1), background-color .14s;
+}
+.tampon:hover { background: var(--credit-vif); }
+.tampon:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 0 var(--credit), 0 1px 4px -1px rgba(0,0,0,.4),
+              inset 0 0 0 1px color-mix(in srgb, #fff 26%, transparent);
+}
+.tampon-creux {
+  background: transparent; color: var(--dorure-clair);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--dorure) 70%, transparent);
+}
+.tampon-creux:hover { background: color-mix(in srgb, var(--dorure) 14%, transparent); color: var(--dorure-clair); }
+.tampon-creux:active { box-shadow: inset 0 0 0 1.5px var(--dorure); }
+/* Sur fond page, le tampon creux s'encre en rouge. */
+.sur-page .tampon-creux { color: var(--credit); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--credit) 55%, transparent); }
+.sur-page .tampon-creux:hover { background: color-mix(in srgb, var(--credit) 8%, transparent); }
+
+/* ═══ LA PAGE DU REGISTRE — la preuve, pas une illustration ══════════════ */
+.registre {
+  background: var(--page);
+  /* ⚠️ LA COULEUR D'ENCRE EST OBLIGATOIRE ICI.
+        Le registre est posé sur la couverture, qui met `color: var(--page)`
+        pour son propre texte. Sans cette ligne, les cellules héritent de
+        l'ivoire et s'écrivent en ivoire sur ivoire : la table s'affiche vide,
+        et seules les cellules qui fixent leur couleur (le visa) apparaissent. */
+  color: var(--encre);
+  box-shadow: 0 1px 0 0 rgba(0,0,0,.5), 0 26px 50px -22px rgba(0,0,0,.65);
+  border-radius: 2px 3px 3px 2px;
+  /* La gouttière : le bord cousu, à gauche. */
+  border-left: 5px solid var(--reliure-bas);
+  overflow: hidden;
+}
+.registre-tete {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 13px 20px; border-bottom: 2px solid var(--encre);
+  background: var(--page-creux);
+}
+.registre-tete span {
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 11.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--encre-pale);
+}
+.registre-tete b { font-size: 14px; color: var(--encre); }
+
+table.ecritures { width: 100%; border-collapse: collapse; }
+table.ecritures th {
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 11px; letter-spacing: 0.17em; text-transform: uppercase;
+  color: var(--encre-pale); font-weight: 700; text-align: left;
+  padding: 9px 14px; border-bottom: 1px solid var(--encre-pale);
+}
+table.ecritures td {
+  padding: 11px 14px; font-size: 15px;
+  border-bottom: 1px solid var(--filet);
+  /* La réglure horizontale du cahier passe DERRIÈRE le texte. */
+}
+table.ecritures tr:last-child td { border-bottom: none; }
+/* La colonne des montants porte le filet rouge, comme la colonne crédit
+   d'un registre imprimé. */
+table.ecritures .montant {
+  text-align: right; font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 700; white-space: nowrap;
+  border-left: 1px solid color-mix(in srgb, var(--credit) 42%, transparent);
+}
+table.ecritures .visa {
+  text-align: center; width: 1%;
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 11px; letter-spacing: 0.1em; color: var(--tampon);
+}
+.registre-pied {
+  padding: 11px 20px; border-top: 2px solid var(--encre);
+  background: var(--page-creux);
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 11px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--encre-pale);
+  display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+}
+
+/* L'unique moment animé du site : les écritures s'inscrivent, une fois. */
+/* ⚠️ ON ANIME LES CELLULES, JAMAIS LA LIGNE.
+      `clip-path` sur un <tr> n'est pas fiable : le navigateur sort les
+      cellules vides. Une opacité et un décalage sur les <td> donnent la même
+      lecture — l'écriture qui se pose — sans toucher à la mise en table. */
+@media (prefers-reduced-motion: no-preference) {
+  .registre .ligne td { animation: inscrire .55s cubic-bezier(.16,1,.3,1) backwards; }
+  .registre .ligne:nth-child(1) td { animation-delay: .20s; }
+  .registre .ligne:nth-child(2) td { animation-delay: .33s; }
+  .registre .ligne:nth-child(3) td { animation-delay: .46s; }
+  .registre .ligne:nth-child(4) td { animation-delay: .59s; }
+  .registre .ligne:nth-child(5) td { animation-delay: .72s; }
+}
+@keyframes inscrire {
+  from { opacity: 0; transform: translateX(-7px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ═══ LES PAGES — corps de document ══════════════════════════════════════ */
+main { padding: 56px 0 24px; }
+main.sur-page { padding-top: 48px; }
+/* Les pages juridiques n'ont pas de <main> : même rythme pour leur conteneur. */
+body > .wrap.page-doc { padding-top: 48px; padding-bottom: 24px; }
+
+h1 { font-size: clamp(30px, 3.6vw, 42px); line-height: 1.12; letter-spacing: -0.02em; margin: 0 0 16px; text-wrap: balance; }
+h2 {
+  font-size: 25px; line-height: 1.22; letter-spacing: -0.014em;
+  margin: 52px 0 14px; text-wrap: balance;
+}
+h2:first-child { margin-top: 0; }
+h3 { font-size: 18px; margin: 28px 0 7px; letter-spacing: -0.008em; }
+p  { margin: 0 0 15px; max-width: var(--mesure); }
+.amorce { font-size: 19px; line-height: 1.58; color: var(--encre-pale); }
+
+/* Un titre de section se lit comme un intitulé de colonne : filet + capitales
+   étroites au-dessus du titre lui-même. Pas un « eyebrow » décoratif —
+   le filet est la ligne du registre, et il porte le numéro de la section. */
+.section-rule {
+  border-top: 2px solid var(--encre);
+  margin: 64px 0 0; padding-top: 10px;
+}
+
+/* ═══ LES ÉCRITURES — ce que fait l'application ══════════════════════════ */
+/* Trois lignes de registre, pas trois cartes. Chacune a son filet, son
+   intitulé étroit et son texte ; rien ne flotte dans une boîte. */
+.lignes { margin: 8px 0 0; }
+.lignes > div {
+  display: grid; grid-template-columns: minmax(210px, 270px) 1fr;
+  gap: 10px 40px; align-items: start;
+  padding: 24px 0; border-bottom: 1px solid var(--filet);
+}
+.lignes > div:first-child { border-top: 1px solid var(--filet); }
+.lignes h3 {
+  margin: 0; font-size: 19px; line-height: 1.28; letter-spacing: -0.01em;
+  padding-left: 15px; border-left: 2px solid var(--credit);
+}
+.lignes p { margin: 0; color: var(--encre-pale); font-size: 16px; }
+
+/* ═══ LA NOTE — fond de page, filet d'or ════════════════════════════════ */
+.note {
+  background: var(--page-creux);
+  border-top: 2px solid var(--dorure); border-bottom: 1px solid var(--filet);
+  padding: 17px 20px; margin: 26px 0; font-size: 16px;
+  max-width: var(--mesure);
+}
+.note strong { font-weight: 700; }
+
+/* ═══ VÉRIFICATION ══════════════════════════════════════════════════════ */
 .verify-box {
-  border: 2px solid var(--green-deep); border-radius: 12px;
-  padding: 24px; margin: 24px 0;
+  background: var(--page-creux);
+  border-top: 3px solid var(--reliure); border-bottom: 1px solid var(--filet);
+  padding: 26px; margin: 26px 0; max-width: 620px;
 }
-label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+label {
+  display: block; margin-bottom: 9px;
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--encre-pale);
+}
 input[type="text"] {
-  width: 100%; padding: 15px 16px; font-size: 20px;
-  font-family: "Courier New", monospace; letter-spacing: 2px; text-transform: uppercase;
-  border: 1.5px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink);
+  width: 100%; padding: 15px 16px;
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 22px; letter-spacing: 0.18em; text-transform: uppercase;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--encre); background: var(--page);
+  border: 1.5px solid var(--encre-pale); border-radius: 2px;
+  caret-color: var(--credit);
 }
-input[type="text"]:focus { outline: none; border-color: var(--green); }
-.field-hint { font-size: 13px; color: var(--muted); margin: 8px 0 16px; }
+input[type="text"]:focus { outline: none; border-color: var(--tampon); box-shadow: inset 0 0 0 1px var(--tampon); }
+input[type="text"]::placeholder { color: color-mix(in srgb, var(--encre-pale) 62%, transparent); letter-spacing: 0.1em; }
+.field-hint { font-size: 14px; color: var(--encre-pale); margin: 9px 0 18px; }
 
-/* Résultats — la couleur porte le sens, le texte aussi. Jamais la couleur
-   seule : un daltonien doit pouvoir lire le verdict. */
-.result { border-radius: 10px; padding: 18px 20px; margin-top: 20px; border-left: 5px solid; }
-.result h3 { margin: 0 0 6px; font-size: 19px; }
-.result p  { margin: 0; font-size: 15px; }
-.result.valid   { background: #F0FDF4; border-color: #047857; color: #04321F; }
-.result.invalid { background: #FEF2F2; border-color: #B91C1C; color: #450A0A; }
-.result.warn    { background: #FFFBEB; border-color: #B45309; color: #451A03; }
+/* Le verdict. La couleur porte le sens ET le texte aussi : un daltonien doit
+   pouvoir lire le résultat sans voir la couleur. */
+.result { padding: 18px 20px; margin-top: 22px; border-top: 3px solid; background: var(--page-creux); }
+.result h3 { margin: 0 0 5px; font-size: 20px; }
+.result p  { margin: 0; font-size: 16px; }
+.result.valid   { border-color: #0B6B3A; background: #EDF7F0; color: #06341C; }
+.result.invalid { border-color: var(--credit); background: #FBEFEE; color: #4A0D09; }
+.result.warn    { border-color: var(--dorure); background: #FBF4E4; color: #40300B; }
 
 .fingerprint {
-  font-family: "Courier New", monospace; font-size: 21px; font-weight: 700;
-  letter-spacing: 2px; margin: 10px 0 6px; word-break: break-all;
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 23px; font-weight: 700; letter-spacing: 0.16em;
+  font-variant-numeric: tabular-nums lining-nums;
+  margin: 12px 0 6px; word-break: break-all;
 }
 
-.note {
-  background: var(--bg-soft); border-left: 4px solid var(--gold);
-  padding: 14px 18px; margin: 20px 0; font-size: 15px;
+/* ═══ TABLEAUX DE CONTENU ═══════════════════════════════════════════════ */
+table { width: 100%; border-collapse: collapse; margin: 20px 0; max-width: var(--mesure); }
+th, td { text-align: left; padding: 11px 10px; border-bottom: 1px solid var(--filet); font-size: 16px; }
+th {
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--encre-pale); border-bottom: 1.5px solid var(--encre-pale);
 }
 
-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); font-size: 15px; }
-th { font-weight: 700; }
+ul, ol { max-width: var(--mesure); padding-left: 22px; }
+li { margin-bottom: 7px; }
 
+/* ═══ PIED — le dos du registre ═════════════════════════════════════════ */
 footer {
-  margin-top: 64px; padding: 28px 0; border-top: 1px solid var(--line);
-  font-size: 14px; color: var(--muted);
+  margin-top: 72px; padding: 34px 0 40px;
+  background: var(--reliure-bas); color: color-mix(in srgb, var(--page) 70%, transparent);
+  font-size: 15px;
 }
-footer a { color: var(--muted); }
-footer nav { margin: 10px 0 0; gap: 16px; }
-footer nav a { color: var(--muted); font-size: 14px; }
+footer::before {
+  content: ""; display: block; height: 3px; margin-bottom: 30px;
+  background: linear-gradient(90deg, var(--dorure) 0 34px, transparent 34px);
+}
+footer p { max-width: var(--mesure); margin: 0 0 14px; }
+footer nav { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 18px; }
+footer a { color: var(--dorure-clair); }
+footer a:hover { color: var(--page); }
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap;
 }
 
-@media (max-width: 560px) {
-  h1 { font-size: 27px; }
-  .hero { padding: 36px 0 28px; }
-  nav { gap: 12px; }
+/* ═══ ÉTROIT ════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .couverture .wrap { grid-template-columns: 1fr; gap: 42px; }
+  .couverture { padding: 48px 0 56px; }
+}
+@media (max-width: 620px) {
+  body { font-size: 16.5px; }
+  .wrap { padding: 0 20px; }
+  .reliure .wrap { gap: 12px; }
+  .reliure nav { margin-left: 0; width: 100%; gap: 2px; }
+  .reliure nav a { padding: 6px 9px; font-size: 11.5px; letter-spacing: 0.1em; }
+  .couverture h1 { font-size: 33px; }
+  .couverture .amorce { font-size: 17.5px; }
+  .lignes > div { grid-template-columns: 1fr; gap: 9px; padding: 20px 0; }
+  .actions .tampon { width: 100%; text-align: center; }
+  table.ecritures th:nth-child(3), table.ecritures td:nth-child(3) { display: none; }
+  h2 { font-size: 22px; margin-top: 42px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOUVEMENT — « l'écriture se pose »
+   ═══════════════════════════════════════════════════════════════════════════
+
+   ⚠️ UNE SEULE GRAMMAIRE, DÉCLINÉE. Pas une collection d'effets au survol.
+      Tout ce qui apparaît sur ce site arrive comme l'encre arrive sur une
+      page : par la gauche, de quelques pixels, net d'un coup. Jamais par le
+      bas, jamais en zoom, jamais en rebond — ce sont les entrées génériques
+      que cette refonte existe pour éviter.
+
+   ⚠️ COURBE UNIQUE : cubic-bezier(.16,1,.3,1), une sortie exponentielle.
+      Elle démarre vite et s'arrête net, comme une plume qui se pose. Une
+      courbe par site ; en changer selon l'élément, c'est ne pas en avoir.
+
+   ⚠️ RIEN N'EST JAMAIS CACHÉ DE FAÇON DURABLE.
+      L'état masqué n'existe que sous `html.js`, et un filet de sécurité à
+      2,5 s révèle tout quoi qu'il arrive. Sans JavaScript, sur un navigateur
+      ancien, ou si l'observateur ne se déclenche pas, la page est lisible —
+      une animation ratée ne doit jamais effacer un contenu.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ── Le premier écran : la couverture s'écrit ───────────────────────── */
+  .js .couverture h1,
+  .js .couverture .amorce,
+  .js .couverture .regle,
+  .js .couverture .actions,
+  .js .registre {
+    animation: poser .72s cubic-bezier(.16,1,.3,1) backwards;
+  }
+  .js .couverture h1       { animation-delay: .05s; }
+  .js .couverture .amorce  { animation-delay: .16s; }
+  .js .couverture .regle   { animation-delay: .26s; }
+  .js .couverture .actions { animation-delay: .36s; }
+  .js .registre            { animation: ouvrir .78s cubic-bezier(.16,1,.3,1) .12s backwards; }
+
+  /* Le titre se fait net, comme une encre qui prend. Un flou de 6 px sur un
+     seul élément, borné dans le temps : la composition reste fluide. */
+  .js .couverture h1 { animation-name: poser, nettete; animation-duration: .72s, .9s; }
+
+  /* ── Le filet rouge de chaque intitulé se trace vers le bas ─────────── */
+  .lignes h3 { position: relative; border-left: none; }
+  .lignes h3::before {
+    content: ""; position: absolute; left: 0; top: .18em; bottom: .18em; width: 2px;
+    background: var(--credit); transform-origin: top;
+  }
+  .js .pose .lignes h3::before,
+  .js .lignes.pose h3::before { transform: scaleY(0); }
+  .js .lignes.pose.vu h3::before { transform: scaleY(1); transition: transform .5s cubic-bezier(.16,1,.3,1); }
+  .js .lignes.pose.vu > div:nth-child(2) h3::before { transition-delay: .09s; }
+  .js .lignes.pose.vu > div:nth-child(3) h3::before { transition-delay: .18s; }
+
+  /* ── Au défilement : même geste, une seule fois ─────────────────────── */
+  .js .pose { opacity: 0; transform: translateX(-10px); }
+  .js .pose.vu {
+    opacity: 1; transform: none;
+    transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+  }
+  .js .pose.vu.decale-1 { transition-delay: .07s; }
+  .js .pose.vu.decale-2 { transition-delay: .14s; }
+
+  /* Le filet de section se tire sur toute sa largeur. */
+  .js .section-rule { border-top-color: transparent; }
+  .js .section-rule.pose { opacity: 1; transform: none; position: relative; }
+  .js .section-rule.pose::after {
+    content: ""; position: absolute; left: 0; top: -2px; height: 2px; width: 0;
+    background: var(--encre);
+  }
+  .js .section-rule.pose.vu::after { width: 100%; transition: width .8s cubic-bezier(.16,1,.3,1); }
+
+  /* ── Le tampon prend l'encre au survol ──────────────────────────────── */
+  .tampon { transition: transform .14s cubic-bezier(.2,.7,.3,1),
+                        box-shadow .22s cubic-bezier(.16,1,.3,1),
+                        background-color .22s cubic-bezier(.16,1,.3,1); }
+  .tampon:hover { box-shadow: 0 2px 0 0 var(--credit),
+                              0 8px 20px -4px rgba(0,0,0,.5),
+                              inset 0 0 0 1px color-mix(in srgb, #fff 34%, transparent); }
+}
+
+@keyframes poser  { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: none; } }
+@keyframes nettete{ from { filter: blur(6px); } 60% { filter: blur(0); } to { filter: blur(0); } }
+/* Le registre ne glisse pas : il s'ouvre, en se dépliant depuis sa gouttière. */
+@keyframes ouvrir {
+  from { opacity: 0; transform: perspective(1400px) rotateY(-7deg) translateX(-16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ═══ LE PASSEPORT — l'objet que la section décrit ══════════════════════ */
+/* ⚠️ CE BLOC EXISTE POUR UNE RAISON DE COMPOSITION, PAS DE DÉCORATION.
+      Sans lui, toute la moitié basse de la page est une colonne de texte à
+      gauche et un vide à droite. Le monde du registre a l'objet qu'il faut :
+      la souche détachable, perforée, tamponnée. Aucune image n'est chargée —
+      la perforation et le fond de sûreté sont des dégradés répétés. */
+.deux-colonnes {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 330px);
+  gap: 56px; align-items: start;
+}
+.souche {
+  background: var(--page-creux);
+  border: 1px solid var(--filet);
+  box-shadow: 0 14px 30px -18px rgba(11,59,46,.45);
+  padding: 0 0 20px; position: relative; overflow: hidden;
+}
+/* Le fond de sûreté : la trame fine d'un document officiel. */
+.souche::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    repeating-linear-gradient(48deg, transparent 0 7px, color-mix(in srgb, var(--reliure) 4%, transparent) 7px 8px),
+    repeating-linear-gradient(-48deg, transparent 0 7px, color-mix(in srgb, var(--reliure) 4%, transparent) 7px 8px);
+}
+/* La perforation du haut : la souche se détache du carnet. */
+.souche-perfo {
+  height: 12px;
+  background: radial-gradient(circle at 6px 0, var(--page) 0 4.2px, transparent 4.6px) repeat-x;
+  background-size: 12px 12px;
+  border-bottom: 1px dashed color-mix(in srgb, var(--encre-pale) 48%, transparent);
+}
+.souche-corps { padding: 20px 22px 0; position: relative; }
+.souche-titre {
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--encre-pale); margin: 0 0 14px;
+}
+.souche dt {
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 10.5px; letter-spacing: 0.17em; text-transform: uppercase;
+  color: var(--encre-pale); margin-top: 13px;
+}
+.souche dd {
+  margin: 2px 0 0;
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 19px; letter-spacing: 0.13em; font-variant-numeric: tabular-nums lining-nums;
+  color: var(--encre);
+}
+.souche dd.petit { font-size: 14px; letter-spacing: 0.08em; }
+.souche dl { margin: 0 0 18px; }
+/* Le tampon : encré de travers, comme un vrai. */
+.souche-tampon {
+  position: absolute; right: 14px; bottom: 6px;
+  transform: rotate(-9deg);
+  font-family: "Etroite", "Liberation Sans Narrow", Arial Narrow, sans-serif;
+  font-size: 12px; letter-spacing: 0.17em; text-transform: uppercase;
+  color: var(--credit); padding: 7px 11px;
+  border: 2px solid var(--credit); border-radius: 3px;
+  opacity: .88;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js .souche.pose .souche-tampon { opacity: 0; transform: rotate(-9deg) scale(1.5); }
+  .js .souche.pose.vu .souche-tampon {
+    opacity: .88; transform: rotate(-9deg) scale(1);
+    transition: opacity .3s cubic-bezier(.16,1,.3,1) .42s, transform .34s cubic-bezier(.3,1.5,.5,1) .42s;
+  }
+}
+@media (max-width: 860px) {
+  .deux-colonnes { grid-template-columns: 1fr; gap: 34px; }
+  .souche { max-width: 360px; }
 }

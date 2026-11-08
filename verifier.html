@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Vérifier un passeport financier — SmartBudget Africa</title>
 <meta name="description" content="Vérifiez qu'un passeport financier SmartBudget est authentique. Saisissez le numéro imprimé sur le document." />
+<meta name="theme-color" content="#0B3B2E" />
 <link rel="stylesheet" href="assets/style.css" />
+<script>document.documentElement.className+=" js"</script>
 </head>
 <body>
 
@@ -35,14 +37,17 @@
   ═══════════════════════════════════════════════════════════════════════════
 -->
 
-<header>
+<header class="reliure">
   <div class="wrap">
-    <a class="brand" href="index.html">
-      <svg viewBox="0 0 120 120" width="34" height="34" aria-hidden="true">
-        <path d="M88 32 C62 26 34 34 34 52 C34 66 54 70 62 73" stroke="#2FD37F" stroke-width="17" fill="none" stroke-linecap="round"/>
-        <path d="M62 73 C72 77 86 80 86 92 C86 106 60 110 36 100" stroke="#FFC93C" stroke-width="17" fill="none" stroke-linecap="round"/>
+    <a class="marque" href="index.html">
+      <svg viewBox="0 0 120 120" width="36" height="36" aria-hidden="true">
+        <path d="M88 32 C62 26 34 34 34 52 C34 66 54 70 62 73" stroke="#E8C675" stroke-width="17" fill="none" stroke-linecap="round"/>
+        <path d="M62 73 C72 77 86 80 86 92 C86 106 60 110 36 100" stroke="#A8211A" stroke-width="17" fill="none" stroke-linecap="round"/>
       </svg>
-      <span class="brand-name">Smart<span>Budget</span></span>
+      <span>
+        <span class="marque-nom"><b>Smart</b>Budget</span>
+        <span class="marque-sous">Africa</span>
+      </span>
     </a>
     <nav>
       <a href="index.html">Accueil</a>
@@ -53,7 +58,7 @@
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap sur-page">
   <div class="hero">
     <h1>Vérifier un passeport financier</h1>
     <p class="lead">
@@ -123,17 +128,19 @@
   </p>
 </main>
 
-<footer class="wrap">
-  <p>
-    SmartBudget Africa ne détient aucun fonds. Elle tient le registre des
-    opérations enregistrées par ses utilisateurs et des cotisations constatées
-    par les membres de leurs tontines.
-  </p>
-  <nav>
-    <a href="conditions.html">Conditions d'utilisation</a>
-    <a href="confidentialite.html">Confidentialité</a>
-    <a href="suppression-compte.html">Supprimer mon compte</a>
-  </nav>
+<footer>
+  <div class="wrap">
+    <p>
+      SmartBudget Africa ne détient aucun fonds. Elle tient le registre des
+      opérations enregistrées par ses utilisateurs et des cotisations constatées
+      par les membres de leurs tontines.
+    </p>
+    <nav>
+      <a href="conditions.html">Conditions d'utilisation</a>
+      <a href="confidentialite.html">Confidentialité</a>
+      <a href="suppression-compte.html">Supprimer mon compte</a>
+    </nav>
+  </div>
 </footer>
 
 <script src="assets/verifier.js"></script>
