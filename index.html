@@ -7,9 +7,15 @@
 <meta name="description" content="SmartBudget Africa tient le registre d'une tontine : qui a versé, quand, combien. L'application ne détient aucun fonds. Vérifiez ici l'authenticité d'un passeport financier." />
 <meta name="theme-color" content="#0B3B2E" />
 <link rel="stylesheet" href="assets/style.css" />
-<!-- Posé avant le premier rendu : les états masqués n'existent que si le
-     script tourne, donc la page reste entière sans JavaScript. -->
-<script>document.documentElement.className+=" js"</script>
+<!-- ⚠️ FICHIER EXTERNE, PAS UN SCRIPT EN LIGNE, ET PAS `defer`.
+     — externe : la CSP du site vise `script-src 'self'` (voir README) ; un
+       script en ligne obligerait à `'unsafe-inline'`, ce qui désarme la
+       protection principale contre l'injection. Sur un site dont le rôle est
+       d'affirmer qu'un document est authentique, c'est inacceptable.
+     — sans `defer` : le drapeau `js` doit être posé AVANT le premier rendu.
+       Différé, les blocs s'afficheraient puis disparaîtraient le temps que la
+       classe arrive. Le fichier fait 2 Ko. -->
+<script src="assets/mouvement.js"></script>
 </head>
 <body>
 
@@ -202,57 +208,6 @@
 </footer>
 
 
-<script>
-/* ═══════════════════════════════════════════════════════════════════════════
-   LE MOUVEMENT — en ligne, sans requête, et sans danger pour le contenu
-   ═══════════════════════════════════════════════════════════════════════════
-   ⚠️ FILET DE SÉCURITÉ OBLIGATOIRE (voir plus bas). Si l'observateur ne se
-      déclenche pas — vieux navigateur, onglet restauré, capture d'écran
-      automatisée — tout est révélé au bout de 2,5 s. Une animation ratée ne
-      doit jamais effacer un texte.
-   ⚠️ `unobserve` APRÈS RÉVÉLATION : chaque bloc se pose une fois. Un élément
-      qui rejoue son entrée à chaque passage est une distraction, pas une
-      animation.
-═══════════════════════════════════════════════════════════════════════════ */
-(function () {
-  var doux = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var blocs = [].slice.call(document.querySelectorAll(".pose"));
-  function montrer(e) { e.classList.add("vu"); }
-
-  if (doux || !("IntersectionObserver" in window)) { blocs.forEach(montrer); }
-  else {
-    var obs = new IntersectionObserver(function (entrees) {
-      entrees.forEach(function (x) { if (x.isIntersecting) { montrer(x.target); obs.unobserve(x.target); } });
-    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.08 });
-    blocs.forEach(function (b) { obs.observe(b); });
-    setTimeout(function () { blocs.forEach(montrer); }, 2500);   // le filet
-  }
-
-  /* La cinquième écriture arrive après les autres, et le total suit.
-     C'est le mécanisme du produit joué une fois : un registre qui se remplit
-     sous les yeux du groupe. Les données sont celles de la démonstration, et
-     le pied du registre le dit. */
-  var tardive = document.querySelector("[data-tardive]");
-  var total = document.querySelector("[data-total]");
-  if (tardive && total && !doux) {
-    tardive.style.visibility = "hidden";
-    total.textContent = "100 000";
-    setTimeout(function () {
-      tardive.style.visibility = "";
-      tardive.querySelectorAll("td").forEach(function (c, i) {
-        c.animate([{ opacity: 0, transform: "translateX(-7px)" }, { opacity: 1, transform: "none" }],
-                  { duration: 520, delay: i * 45, easing: "cubic-bezier(.16,1,.3,1)", fill: "backwards" });
-      });
-      var de = 100000, vers = 125000, t0 = performance.now();
-      (function pas(t) {
-        var k = Math.min(1, (t - t0) / 760), e = 1 - Math.pow(1 - k, 3);
-        total.textContent = Math.round(de + (vers - de) * e).toLocaleString("fr-FR");
-        if (k < 1) requestAnimationFrame(pas);
-      })(t0);
-    }, 1900);
-  }
-})();
-</script>
 
 </body>
 </html>
