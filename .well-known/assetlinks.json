@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.kinglyon.smartbudget",
+      "sha256_cert_fingerprints": [
+        "6D:9E:3E:0B:1B:14:4C:6B:58:E6:DB:00:5B:A3:E8:FF:07:A2:2B:CE:4F:2A:70:01:6C:02:D2:2B:F7:B9:A9:EA"
+      ]
+    }
+  }
+]

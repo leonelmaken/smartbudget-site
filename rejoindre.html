@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rejoindre une tontine — SmartBudget Africa</title>
+<meta name="description" content="Vous avez reçu une invitation à rejoindre une tontine sur SmartBudget Africa. Installez l'application et collez votre code." />
+<meta name="theme-color" content="#0B3B2E" />
+<!--
+  ⚠️ `noindex` OBLIGATOIRE. Cette page porte un jeton d'invitation dans son
+     adresse. Indexée, elle ferait entrer des codes de réservation de place
+     dans un index public. Le jeton n'est pas un secret de connexion, mais il
+     réserve une place dans un groupe où circule de l'argent.
+-->
+<meta name="robots" content="noindex, nofollow" />
+<meta name="referrer" content="no-referrer" />
+<link rel="stylesheet" href="assets/style.css" />
+<script src="assets/mouvement.js"></script>
+</head>
+<body>
+
+<!--
+  ═══════════════════════════════════════════════════════════════════════════
+  LA PAGE D'ATTERRISSAGE D'UNE INVITATION
+  ═══════════════════════════════════════════════════════════════════════════
+
+  Elle n'est jamais visitée volontairement : on y arrive en touchant un lien
+  reçu sur WhatsApp. Deux personnes différentes y atterrissent, et la page
+  doit servir les deux sans poser de question.
+
+  1. CELLE QUI A DÉJÀ L'APPLICATION ne voit pas cette page : Android ouvre
+     SmartBudget directement, le code est déjà saisi. Si elle arrive ici
+     quand même — lien ouvert sur un ordinateur, association non vérifiée —
+     le bouton « Ouvrir dans l'application » la rattrape.
+
+  2. CELLE QUI NE L'A PAS ENCORE est le cas qui compte. Elle doit repartir
+     avec DEUX choses : l'application, et son code. Un lien ne survit pas à
+     un passage par le Play Store sans service de « deferred deep linking »
+     payant — c'est pourquoi le code est affiché en grand, avec un bouton
+     copier, AVANT le lien de téléchargement. L'ordre n'est pas décoratif :
+     quelqu'un qui part installer sans avoir copié son code revient sur une
+     page qu'il ne retrouvera pas.
+
+  ⚠️ AUCUN APPEL RÉSEAU ICI. La page ne vérifie pas le code et n'interroge
+     aucune API. Elle ne sait pas s'il est valide, et c'est très bien : seul
+     le serveur le sait, au moment où l'application le lui présente. Une page
+     publique qui répondrait « ce code existe » serait un oracle — on pourrait
+     balayer l'espace des jetons pour découvrir lesquels réservent une place.
+  ═══════════════════════════════════════════════════════════════════════════
+-->
+
+<header class="reliure">
+  <div class="wrap">
+    <a class="marque" href="index.html">
+      <svg viewBox="0 0 120 120" width="36" height="36" aria-hidden="true">
+        <path d="M88 32 C62 26 34 34 34 52 C34 66 54 70 62 73" stroke="#E8C675" stroke-width="17" fill="none" stroke-linecap="round"/>
+        <path d="M62 73 C72 77 86 80 86 92 C86 106 60 110 36 100" stroke="#A8211A" stroke-width="17" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span>
+        <span class="marque-nom"><b>Smart</b>Budget</span>
+        <span class="marque-sous">Africa</span>
+      </span>
+    </a>
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="verifier.html">Vérifier</a>
+      <a href="telecharger.html">Télécharger</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap sur-page">
+
+  <h1>On vous invite dans une tontine.</h1>
+  <p class="amorce">
+    Quelqu'un que vous connaissez a créé un code pour vous. Voici ce qu'il
+    faut en faire.
+  </p>
+
+  <!-- Le code, posé comme une souche de carnet. C'est l'élément principal
+       de la page : il arrive avant tout le reste. -->
+  <div class="souche" id="bloc-code" style="max-width:520px;margin:30px 0">
+    <div class="souche-perfo"></div>
+    <div class="souche-corps">
+      <p class="souche-titre">Votre code d'invitation</p>
+      <p id="code" class="code-invitation">—</p>
+      <p class="actions" style="margin:0 0 18px">
+        <button type="button" class="tampon" id="copier">Copier le code</button>
+      </p>
+      <p class="field-hint" style="margin:0 0 18px" id="etat" role="status" aria-live="polite">
+        Il ne sert qu'une fois et expire sept jours après sa création.
+      </p>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Copiez-le avant de continuer.</strong> Une fois parti installer
+    l'application, vous ne reviendrez pas forcément sur cette page.
+  </div>
+
+  <div class="section-rule"></div>
+  <h2>Ensuite</h2>
+
+  <ol class="steps">
+    <li>
+      <strong>Installez SmartBudget Africa.</strong>
+      <p style="margin:6px 0 0">
+        <a class="mailbtn" id="store" href="https://play.google.com/store/apps/details?id=com.kinglyon.smartbudget">Obtenir sur Google Play</a>
+      </p>
+    </li>
+    <li><strong>Créez votre compte.</strong> Nom, numéro, mot de passe. Rien d'autre.</li>
+    <li>
+      <strong>Ouvrez « Mes tontines », puis « J'ai un code d'invitation ».</strong>
+      Collez le code ci-dessus et validez.
+    </li>
+  </ol>
+
+  <p class="actions" style="margin-top:26px">
+    <a class="tampon tampon-creux" id="ouvrir" href="#">J'ai déjà l'application — l'ouvrir</a>
+  </p>
+
+  <div class="section-rule"></div>
+  <h2>Avant d'accepter</h2>
+  <p>
+    <strong>SmartBudget ne détient aucun fonds et n'effectue aucun paiement.</strong>
+    L'argent de la tontine continue de circuler entre ses membres, comme
+    avant. L'application tient le registre — qui a versé, quand, combien — et
+    le rend lisible par tous.
+  </p>
+  <p>
+    Rejoindre un groupe vous engage à son règlement, que vous pourrez lire en
+    entier dans l'application <em>avant</em> d'accepter. Vous n'avez rien à
+    payer pour entrer.
+  </p>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>
+      SmartBudget Africa ne détient aucun fonds. Elle tient le registre des
+      opérations enregistrées par ses utilisateurs et des cotisations constatées
+      par les membres de leurs tontines.
+    </p>
+    <nav>
+      <a href="conditions.html">Conditions d'utilisation</a>
+      <a href="confidentialite.html">Confidentialité</a>
+      <a href="suppression-compte.html">Supprimer mon compte</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="assets/rejoindre.js"></script>
+</body>
+</html>
