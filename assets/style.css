@@ -667,3 +667,9 @@ footer a:hover { color: var(--page); }
   background: var(--page); border: 1px dashed color-mix(in srgb, var(--encre-pale) 55%, transparent);
   padding: 15px 16px; margin: 0 0 16px; user-select: all;
 }
+
+/* ── QR code (page Télécharger) ── */
+.qr-bloc { margin: 2rem 0; display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; }
+.qr-cadre { width: 11rem; height: 11rem; padding: .5rem; background: #fff; border: 1px solid var(--encre); }
+.qr-cadre svg { display: block; width: 100%; height: 100%; }
+.qr-legende { max-width: 22rem; margin: 0; }

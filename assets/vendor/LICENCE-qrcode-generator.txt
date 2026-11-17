@@ -1,0 +1,4 @@
+qrcode-generator 2.0.4 — Copyright (c) 2009 Kazuhiko Arase
+Licence MIT — http://www.opensource.org/licenses/mit-license.php
+Source : https://www.npmjs.com/package/qrcode-generator (fichier dist/qrcode.js, non modifié)
+« QR Code » est une marque déposée de DENSO WAVE INCORPORATED.
