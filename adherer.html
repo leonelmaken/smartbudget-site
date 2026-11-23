@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Adhérer à une tontine — SmartBudget Africa</title>
+<meta name="description" content="Vous avez reçu un lien pour adhérer à une tontine sur SmartBudget Africa." />
+<meta name="theme-color" content="#0B3B2E" />
+<!--
+  ⚠️ `noindex` OBLIGATOIRE. Cette page porte un jeton d'adhésion dans son
+     adresse. Indexée, elle ferait entrer des réservations de place
+     dans un index public. Le jeton n'est pas un secret de connexion, mais il
+     réserve une place dans un groupe où circule de l'argent.
+-->
+<meta name="robots" content="noindex, nofollow" />
+<meta name="referrer" content="no-referrer" />
+<link rel="stylesheet" href="assets/style.css" />
+<script src="assets/mouvement.js"></script>
+</head>
+<body>
+
+<!--
+  ═══════════════════════════════════════════════════════════════════════════
+  LA PAGE D'ATTERRISSAGE D'UNE ADHÉSION
+  ═══════════════════════════════════════════════════════════════════════════
+
+  Cette page ne lit que le jeton présent dans ?p=. Elle ne le vérifie pas et
+  ne fait aucun appel réseau. Le jeton n'est jamais écrit dans le stockage du
+  navigateur. L'ouverture de l'application se fait uniquement après un appui.
+  ═══════════════════════════════════════════════════════════════════════════
+-->
+
+<header class="reliure">
+  <div class="wrap">
+    <a class="marque" href="index.html">
+      <svg viewBox="0 0 120 120" width="36" height="36" aria-hidden="true">
+        <path d="M88 32 C62 26 34 34 34 52 C34 66 54 70 62 73" stroke="#E8C675" stroke-width="17" fill="none" stroke-linecap="round"/>
+        <path d="M62 73 C72 77 86 80 86 92 C86 106 60 110 36 100" stroke="#A8211A" stroke-width="17" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span>
+        <span class="marque-nom"><b>Smart</b>Budget</span>
+        <span class="marque-sous">Africa</span>
+      </span>
+    </a>
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="verifier.html">Vérifier</a>
+      <a href="telecharger.html">Télécharger</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap sur-page">
+
+  <h1>Votre place vous attend.</h1>
+  <p class="amorce">
+    Ouvrez ce lien sur le téléphone où SmartBudget Africa est installé pour
+    retrouver votre place et lire le règlement avant d'adhérer.
+  </p>
+
+  <div class="souche" id="bloc-code" style="max-width:520px;margin:30px 0">
+    <div class="souche-perfo"></div>
+    <div class="souche-corps">
+      <p class="souche-titre">Votre lien d'adhésion</p>
+      <p class="field-hint" style="margin:0 0 18px" id="etat" role="status" aria-live="polite">Préparation du lien…</p>
+      <p class="actions" style="margin:0 0 18px">
+        <a class="tampon" id="ouvrir" href="#">Ouvrir dans SmartBudget</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>L'application n'est pas installée ?</strong> Téléchargez-la, puis
+    rouvrez le même lien pour retrouver votre place.
+  </div>
+
+  <div class="section-rule"></div>
+  <h2>Ensuite</h2>
+
+  <ol class="steps">
+    <li>
+      <strong>Installez SmartBudget Africa si nécessaire.</strong>
+      <p style="margin:6px 0 0">
+        <a class="mailbtn" id="store" href="telecharger.html">Télécharger l'application</a>
+      </p>
+    </li>
+    <li><strong>Ouvrez à nouveau le lien reçu.</strong> SmartBudget retrouvera la place qui vous est réservée.</li>
+    <li><strong>Lisez le règlement et les informations du groupe avant d'adhérer.</strong></li>
+  </ol>
+
+  <div class="section-rule"></div>
+  <h2>Avant d'accepter</h2>
+  <p>
+    <strong>SmartBudget ne détient aucun fonds et n'effectue aucun paiement.</strong>
+    L'argent de la tontine continue de circuler entre ses membres, comme
+    avant. L'application tient le registre — qui a versé, quand, combien — et
+    le rend lisible par tous.
+  </p>
+  <p>
+    Rejoindre un groupe vous engage à son règlement, que vous pourrez lire en
+    entier dans l'application <em>avant</em> d'accepter. Vous n'avez rien à
+    payer pour entrer.
+  </p>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>
+      SmartBudget Africa ne détient aucun fonds. Elle tient le registre des
+      opérations enregistrées par ses utilisateurs et des cotisations constatées
+      par les membres de leurs tontines.
+    </p>
+    <nav>
+      <a href="conditions.html">Conditions d'utilisation</a>
+      <a href="confidentialite.html">Confidentialité</a>
+      <a href="suppression-compte.html">Supprimer mon compte</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="assets/adherer.js"></script>
+</body>
+</html>
